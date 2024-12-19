@@ -75,9 +75,37 @@
                 id="Badge-{{ section_id }}-{{ card_product.id }}"
                 class="badge custom--badge badge--bottom-left color-{{ settings.sale_badge_color_scheme }}"
               >
-                {{- card_product.tags -}}
+                {{- tag -}}
               </span>
             {%- endfor -%}
+
+            {% for badge in shop.metaobjects.badges.values %}
+              <span
+                id="Badge-{{ section_id }}-{{ card_product.id }}"
+                class="badge custom--badge badge--bottom-left color-{{ settings.sale_badge_color_scheme }}"
+              >
+                {{ badge.value }}
+              </span>
+            {% endfor %}
+
+            {% comment %}
+              I would've made something like this to show the badge
+              if the card product tag matched the metaobject value.
+            {% endcomment %}
+            {% for badge in shop.metaobjects.badges.values %}
+              {% for tag in card_product.tags %}
+                {% if badge.value == tag %}
+                  <span
+                    id="Badge-{{ section_id }}-{{ card_product.id }}"
+                    class="badge custom--badge badge--bottom-left color-{{ settings.sale_badge_color_scheme }}"
+                  >
+                    {{ badge.value }}
+                  </span>
+                {% else %}
+                  <p>Card product tags don't match</p>
+                {% endif %}
+              {% endfor %}
+            {% endfor %}
           </div>
         {%- endif -%}
 
@@ -105,6 +133,8 @@
                 width="{{ card_product.featured_media.width }}"
                 height="{{ card_product.featured_media.height }}"
               >
+              {% comment %} Showing the 2nd image on hover {% endcomment %}
+              {{ card_product.images[1] | image_url: width: 300 | image_tag }}
               {% comment %}theme-check-enable ImgLazyLoading{% endcomment %}
             </div>
           </div>
